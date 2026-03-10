@@ -14,17 +14,31 @@ if ! command -v cargo &> /dev/null; then
     source "$HOME/.cargo/env"
 fi
 
-# Verifica se o Node.js está instalado
-if ! command -v npm &> /dev/null; then
-    echo -e "${BLUE}Node.js (npm) não encontrado. Tentando instalar...${NC}"
+# Função para verificar versão do Node.js
+check_node_version() {
+    if ! command -v node &> /dev/null; then return 1; fi
+    local version=$(node -v | cut -d'v' -f2 | cut -d'.' -f1)
+    if [ "$version" -lt 18 ]; then return 1; fi
+    return 0
+}
+
+# Verifica se o Node.js está instalado e é moderno (v18+)
+if ! check_node_version; then
+    echo -e "${BLUE}Node.js não encontrado ou muito antigo ($(node -v 2>/dev/null || echo "N/A")). Instalando Node.js 20...${NC}"
     if command -v apt-get &> /dev/null; then
+        # Garante que temos curl
+        apt-get update && apt-get install -y curl
+        
+        # Usa o instalador oficial da NodeSource para Node 20
         if command -v sudo &> /dev/null; then
-            sudo apt-get update && sudo apt-get install -y nodejs npm
+            curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+            sudo apt-get install -y nodejs
         else
-            apt-get update && apt-get install -y nodejs npm
+            curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+            apt-get install -y nodejs
         fi
     else
-        echo -e "${RED}Erro: 'apt-get' não encontrado. Instale o Node.js manualmente antes de continuar.${NC}"
+        echo -e "${RED}Erro: Não foi possível instalar Node.js 18+. Por favor, atualize manualmente.${NC}"
         exit 1
     fi
 fi
