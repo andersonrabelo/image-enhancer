@@ -57,14 +57,19 @@ cleanup() {
 }
 trap cleanup INT TERM
 
-echo -e "${GREEN}-> Tentando usar Cloudflare Tunnel (cloudflared)...${NC}"
+echo -e "${GREEN}-> Iniciando Cloudflare Tunnel (cloudflared)...${NC}"
 if command -v cloudflared &> /dev/null; then
-    cloudflared tunnel --url http://localhost:8080
-    TUNNEL_EXIT=$?
+    CLOUDFLARED_BIN="cloudflared"
 else
-    TUNNEL_EXIT=1
-    echo -e "${RED}➜ cloudflared não está instalado.${NC}"
+    echo -e "${BLUE}cloudflared não encontrado. Baixando binário autônomo...${NC}"
+    if [ "$(uname -m)" = "aarch64" ]; then ARCH="arm64"; else ARCH="amd64"; fi
+    curl -sL --output cloudflared "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-${ARCH}"
+    chmod +x cloudflared
+    CLOUDFLARED_BIN="./cloudflared"
 fi
+
+$CLOUDFLARED_BIN tunnel --url http://localhost:8080
+TUNNEL_EXIT=$?
 
 if [ $TUNNEL_EXIT -ne 0 ]; then
     echo -e "${GREEN}-> Usando Localtunnel como alternativa...${NC}"
