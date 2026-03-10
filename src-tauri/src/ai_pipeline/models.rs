@@ -32,11 +32,13 @@ pub async fn process_codeformer(
     let input_tensor_value = ort::value::Tensor::from_array(input_tensor)
         .map_err(|e| format!("Erro Tensor CF: {}", e))?;
         
-    let mut session = session_arc.lock().map_err(|_| "Falha de Mutex CF")?;
-    let outputs = session.run(ort::inputs!["x" => input_tensor_value])
+    let session = session_arc.lock().map_err(|_| "Falha de Mutex CF")?;
+    let inputs = ort::inputs!["x" => input_tensor_value]
+        .map_err(|e| format!("Erro inputs CF: {}", e))?;
+    let outputs = session.run(inputs)
         .map_err(|e| format!("Falha predição CF: {}", e))?;
 
-    let output_view = outputs[0].try_extract_array::<f32>()
+    let output_view = outputs[0].try_extract_tensor::<f32>()
         .map_err(|e| format!("Mismatch Tensor CF: {}", e))?;
 
     let mut out_img = image::RgbImage::new(cf_size, cf_size);
@@ -77,12 +79,13 @@ pub async fn process_scunet(
     let input_tensor_value = ort::value::Tensor::from_array(input_tensor)
         .map_err(|e| format!("Erro Tensor SCUNet: {}", e))?;
         
-    let mut session = session_arc.lock().map_err(|_| "Falha de Mutex SCU")?;
-    // Pode haver pequenas variações no input name, assumindo "input" como placeholder padrão
-    let outputs = session.run(ort::inputs!["input" => input_tensor_value])
+    let session = session_arc.lock().map_err(|_| "Falha de Mutex SCU")?;
+    let inputs = ort::inputs!["input" => input_tensor_value]
+        .map_err(|e| format!("Erro inputs SCU: {}", e))?;
+    let outputs = session.run(inputs)
         .map_err(|e| format!("Falha predição SCUNet: {}", e))?;
 
-    let output_view = outputs[0].try_extract_array::<f32>()
+    let output_view = outputs[0].try_extract_tensor::<f32>()
         .map_err(|e| format!("Mismatch Tensor SCUNet: {}", e))?;
 
     let mut out_img = image::RgbImage::new(net_size, net_size);

@@ -47,14 +47,16 @@ pub async fn detect_faces_and_features(
         .map_err(|e| format!("Erro convertendo Tensor YOLO: {}", e))?;
     
     println!("  -> Processando YOLO Tensor (640x640)...");
-    let mut session = session_arc.lock().map_err(|_| "Falha ao dar Lock na Sessao do YOLO")?;
-    let outputs = session.run(ort::inputs!["images" => input_tensor_value])
+    let session = session_arc.lock().map_err(|_| "Falha ao dar Lock na Sessao do YOLO")?;
+    let inputs = ort::inputs!["images" => input_tensor_value]
+        .map_err(|e| format!("Erro ao criar ort inputs: {}", e))?;
+    let outputs = session.run(inputs)
         .map_err(|e| format!("Falha na NPU YOLO: {}", e))?;
 
     // 4. Extrai a Saída
     // No YOLOv8 com 1 classe (Face), a saida costumeira é shape [1, 5, 8400] 
     // Coordenadas: [x_center, y_center, width, height, confidence] relativos a 640x640
-    let output_view = outputs[0].try_extract_array::<f32>()
+    let output_view = outputs[0].try_extract_tensor::<f32>()
         .map_err(|e| format!("YOLO Tensor mismatch: {}", e))?;
     
     // (WIP) Por brevidade, pularemos a NMS (Non-Maximum Suppression) real

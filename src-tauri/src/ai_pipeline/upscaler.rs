@@ -55,11 +55,12 @@ pub async fn process_realesrgan(
             let input_tensor_value = ort::value::Tensor::from_array(input_tensor).map_err(|e| format!("Erro convertendo Tensor: {}", e))?;
             
             println!("   Processando Tile X:{} Y:{} na GPU/CPU...", x, y);
-            let mut session = session_arc.lock().map_err(|_| "Falha ao obter Mutex da Session")?;
-            let outputs = session.run(ort::inputs!["input" => input_tensor_value]).map_err(|e| format!("Falha na predição: {}", e))?;
+            let session = session_arc.lock().map_err(|_| "Falha ao obter Mutex da Session")?;
+            let inputs = ort::inputs!["input" => input_tensor_value].map_err(|e| format!("Erro cfg inputs: {}", e))?;
+            let outputs = session.run(inputs).map_err(|e| format!("Falha na predição: {}", e))?;
             
             // 4. Extrai a saída 1024x1024 da Memória diretamente para um ndarray (via ndarray feature)
-            let output_view = outputs["output"].try_extract_array::<f32>().map_err(|e| format!("Tensor mismatch: {}", e))?;
+            let output_view = outputs["output"].try_extract_tensor::<f32>().map_err(|e| format!("Tensor mismatch: {}", e))?;
 
             // 5. Costurar (Stitching) no Output Image Final Gigante
             // Transformar BCHW Tensor devolta p/ RBA e colar apenas o tamanho Original (crop_w * scale)

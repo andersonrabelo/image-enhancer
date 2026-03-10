@@ -32,8 +32,6 @@ pub fn init_models(models_dir: PathBuf) -> Result<CoreModels, String> {
         .map_err(|e| format!("Erro de otimização Real-ESRGAN: {}", e))?
         .with_intra_threads(4)
         .map_err(|e| format!("Erro de thread int. Real-ESRGAN: {}", e))?
-        .with_execution_providers([ort::ep::DirectML::default().build()])
-        .map_err(|e| format!("Erro DirectML Real-ESRGAN: {}", e))?
         .commit_from_file(&realesrgan_path)
         .map_err(|e| format!("Erro ao carregar {}: {}", realesrgan_path.display(), e))?;
         
@@ -47,8 +45,6 @@ pub fn init_models(models_dir: PathBuf) -> Result<CoreModels, String> {
         .map_err(|e| format!("Erro de otimização YOLOv8: {}", e))?
         .with_intra_threads(2) // YOLO é leve, não precisa tantas threads alocadas
         .map_err(|e| format!("Erro de thread int. YOLOv8: {}", e))?
-        .with_execution_providers([ort::ep::DirectML::default().build()])
-        .map_err(|e| format!("Erro DirectML YOLOv8: {}", e))?
         .commit_from_file(&yolov8_path)
         .map_err(|e| format!("Erro ao carregar {}: {}", yolov8_path.display(), e))?;
         
@@ -62,8 +58,6 @@ pub fn init_models(models_dir: PathBuf) -> Result<CoreModels, String> {
         .map_err(|e| format!("Erro de otimização CodeFormer: {}", e))?
         .with_intra_threads(4)
         .map_err(|e| format!("Erro de threads CodeFormer: {}", e))?
-        .with_execution_providers([ort::ep::DirectML::default().build()])
-        .map_err(|e| format!("Erro DirectML CodeFormer: {}", e))?
         .commit_from_file(&codeformer_path)
         .map_err(|e| format!("Erro ao carregar {}: {}", codeformer_path.display(), e))?;
 
@@ -77,8 +71,6 @@ pub fn init_models(models_dir: PathBuf) -> Result<CoreModels, String> {
         .map_err(|e| format!("Erro de otimização SCUNet: {}", e))?
         .with_intra_threads(4)
         .map_err(|e| format!("Erro de threads SCUNet: {}", e))?
-        .with_execution_providers([ort::ep::DirectML::default().build()])
-        .map_err(|e| format!("Erro DirectML SCUNet: {}", e))?
         .commit_from_file(&scunet_path)
         .map_err(|e| format!("Erro ao carregar {}: {}", scunet_path.display(), e))?;
 
