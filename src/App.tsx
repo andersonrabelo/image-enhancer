@@ -57,8 +57,8 @@ function App() {
       const formData = new FormData();
       formData.append("image", selectedFile);
       
-      const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
-      console.log("Enviando requisição via HTTP para: ", API_URL);
+      const API_URL = import.meta.env.VITE_API_URL || "";
+      console.log("Enviando requisição via HTTP para: ", API_URL || "caminho relativo (mesmo servidor)");
       
       const response = await fetch(`${API_URL}/api/process`, {
         method: "POST",
