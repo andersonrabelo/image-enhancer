@@ -32,6 +32,10 @@ echo -e "${GREEN}3. Configurando pastas...${NC}"
 mkdir -p uploads
 mkdir -p src-tauri/models
 
+echo -e "${GREEN}4. Baixando Modelos ONNX de IA...${NC}"
+chmod +x scripts/download_models.sh
+./scripts/download_models.sh
+
 echo -e "${BLUE}=== Setup Concluído ===${NC}"
 echo -e "Iniciando o servidor na porta 8080..."
 
