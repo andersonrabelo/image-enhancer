@@ -16,9 +16,13 @@ fi
 
 # Verifica se o Node.js está instalado
 if ! command -v npm &> /dev/null; then
-    echo -e "${BLUE}Node.js (npm) não encontrado. Tentando instalar via apt...${NC}"
+    echo -e "${BLUE}Node.js (npm) não encontrado. Tentando instalar...${NC}"
     if command -v apt-get &> /dev/null; then
-        sudo apt-get update && sudo apt-get install -y nodejs npm
+        if command -v sudo &> /dev/null; then
+            sudo apt-get update && sudo apt-get install -y nodejs npm
+        else
+            apt-get update && apt-get install -y nodejs npm
+        fi
     else
         echo -e "${RED}Erro: 'apt-get' não encontrado. Instale o Node.js manualmente antes de continuar.${NC}"
         exit 1
@@ -28,6 +32,11 @@ fi
 echo -e "${GREEN}1. Instalando dependências do Frontend e construindo...${NC}"
 npm install
 npm run build
+
+if [ ! -d "dist" ]; then
+    echo -e "${RED}Erro crítico: A pasta 'dist' não foi gerada. O Frontend falhou ao compilar.${NC}"
+    exit 1
+fi
 
 echo -e "${GREEN}2. Compilando o Backend (Rust)...${NC}"
 cd src-tauri
@@ -63,7 +72,9 @@ echo -e "${BLUE}Iniciando a exposição pública da sua API...${NC}"
 
 # Define função para fechar o backend ao sair
 cleanup() {
-    echo -e "\n${BLUE}Desligando o servidor...${NC}"
+    echo -e "\n${BLUE}Desligando o servidor e túnel...${NC}"
+    pkill -f cloudflared || true
+    pkill -f localtunnel || true
     kill $BACKEND_PID
     exit
 }

@@ -41,6 +41,9 @@ async fn main() {
         cwd.join("../dist")
     };
     println!("Servindo Frontend da pasta: {:?}", dist_dir);
+    if !dist_dir.join("index.html").exists() {
+        println!("⚠️ AVISO: 'index.html' não encontrado em {:?}. A interface pode não carregar.", dist_dir);
+    }
     
     let serve_dir = ServeDir::new(dist_dir.clone())
         .fallback(ServeFile::new(dist_dir.join("index.html")));
