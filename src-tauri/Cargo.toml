@@ -1,0 +1,18 @@
+[package]
+name = "image-enhancer-server"
+version = "0.1.0"
+description = "A Web API for Image Enhancer"
+authors = ["you"]
+edition = "2021"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+image = "0.25.9"
+tokio = { version = "1.50.0", features = ["full", "rt-multi-thread"] }
+ort = { version = "2.0.0-rc.12", features = ["ndarray"] }
+ndarray = "0.17.2"
+axum = { version = "0.8.8", features = ["multipart"] }
+tower-http = { version = "0.6.8", features = ["cors", "fs"] }
+tower = "0.5.2"
+uuid = { version = "1.12.0", features = ["v4"] }
