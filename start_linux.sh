@@ -80,13 +80,13 @@ else
     CLOUDFLARED_BIN="./cloudflared"
 fi
 
-$CLOUDFLARED_BIN tunnel --url http://localhost:8080
+$CLOUDFLARED_BIN tunnel --url http://127.0.0.1:8080
 TUNNEL_EXIT=$?
 
 if [ $TUNNEL_EXIT -ne 0 ]; then
     echo -e "${GREEN}-> Usando Localtunnel como alternativa...${NC}"
     echo -e "Acesse o link gerado abaixo e permita a conexão na tela do LocalTunnel."
-    npx localtunnel --port 8080
+    npx localtunnel --port 8080 --local-host 127.0.0.1
 fi
 
 cleanup
