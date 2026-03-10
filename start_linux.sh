@@ -46,16 +46,30 @@ BACKEND_PID=$!
 sleep 2
 
 echo -e "${GREEN}O servidor está rodando na porta 8080!${NC}"
-echo ""
-echo "Você pode expor para internet usando Cloudflare Tunnel (cloudflared):"
-echo "    cloudflared tunnel --url http://localhost:8080"
-echo ""
-echo "Ou usando localtunnel:"
-echo "    npx localtunnel --port 8080"
-echo ""
-echo "Acesse a URL gerada e aproveite o sistema remotamente!"
-echo "(Para desligar o servidor, aperte Ctrl+C)"
+echo -e "${GREEN}O servidor está rodando na porta 8080 localmente!${NC}"
+echo -e "${BLUE}Iniciando a exposição pública da sua API...${NC}"
 
-# Espera até o usuário apertar Ctrl+C para matar tudo
-trap "kill $BACKEND_PID; exit" INT TERM
-wait $BACKEND_PID
+# Define função para fechar o backend ao sair
+cleanup() {
+    echo -e "\n${BLUE}Desligando o servidor...${NC}"
+    kill $BACKEND_PID
+    exit
+}
+trap cleanup INT TERM
+
+echo -e "${GREEN}-> Tentando usar Cloudflare Tunnel (cloudflared)...${NC}"
+if command -v cloudflared &> /dev/null; then
+    cloudflared tunnel --url http://localhost:8080
+    TUNNEL_EXIT=$?
+else
+    TUNNEL_EXIT=1
+    echo -e "${RED}➜ cloudflared não está instalado.${NC}"
+fi
+
+if [ $TUNNEL_EXIT -ne 0 ]; then
+    echo -e "${GREEN}-> Usando Localtunnel como alternativa...${NC}"
+    echo -e "Acesse o link gerado abaixo e permita a conexão na tela do LocalTunnel."
+    npx localtunnel --port 8080
+fi
+
+cleanup
