@@ -19,7 +19,14 @@ pub mod ai_pipeline;
 async fn main() {
     println!("Iniciando servidor backend (Image Enhancer)...");
 
-    let models_dir = std::env::current_dir().unwrap().join("models");
+    let cwd = std::env::current_dir().unwrap();
+    
+    // Resolve caminho dos modelos ONNX
+    let models_dir = if cwd.join("src-tauri/models").exists() {
+        cwd.join("src-tauri/models")
+    } else {
+        cwd.join("models")
+    };
     println!("Procurando Modelos ONNX em: {:?}", models_dir);
     
     let core_models = ai_pipeline::onnx::init_models(models_dir)
@@ -27,8 +34,13 @@ async fn main() {
     
     let shared_state = Arc::new(core_models);
 
-    // Serve Frontend from the 'dist' folder if available
-    let serve_dir = ServeDir::new(std::env::current_dir().unwrap().join("../dist"));
+    // Resolve caminho do Frontend (Pasta Dist)
+    let dist_dir = if cwd.join("dist").exists() {
+        cwd.join("dist")
+    } else {
+        cwd.join("../dist")
+    };
+    let serve_dir = ServeDir::new(dist_dir);
     // Create uploads folder
     let _ = std::fs::create_dir_all("uploads");
 
