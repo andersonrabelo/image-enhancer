@@ -45,13 +45,10 @@ download_model() {
 echo "Verificando modelos na pasta $MODELS_DIR..."
 
 # --- Links para Download dos Modelos ONNX ---
-# IMPORTANTE: Você precisará hospedar seus arquivos .onnx em um local público (ex: HuggingFace, Google Drive público com link direto, ou uma S3 bucket) e colocar as URLs reais aqui.
-# Como exemplo, estou colocando URLs fictícias ou de repositórios conhecidos (substitua pelos seus próprios links diretos dos .onnx que tiramos do repositório)
-
-URL_YOLOV8="https://huggingface.co/andersonrabelo/image-enhancer-models/resolve/main/yolov8_face.onnx"
-URL_CODEFORMER="https://huggingface.co/andersonrabelo/image-enhancer-models/resolve/main/codeformer.onnx"
-URL_SCUNET="https://huggingface.co/andersonrabelo/image-enhancer-models/resolve/main/scunet.onnx"
-URL_REALESRGAN="https://huggingface.co/andersonrabelo/image-enhancer-models/resolve/main/realesrgan-x4-256.onnx"
+URL_YOLOV8="https://huggingface.co/deepghs/yolo-face/resolve/main/yolov8m-face/model.onnx"
+URL_CODEFORMER="https://huggingface.co/maze/faceX/resolve/main/codeformer.onnx"
+URL_SCUNET="https://huggingface.co/deepghs/image_restoration/resolve/main/SCUNet-PSNR.onnx"
+URL_REALESRGAN="https://huggingface.co/AXERA-TECH/Real-ESRGAN/resolve/main/onnx/realesrgan-x4-256.onnx"
 
 download_model "$URL_YOLOV8" "yolov8_face.onnx"
 download_model "$URL_CODEFORMER" "codeformer.onnx"
