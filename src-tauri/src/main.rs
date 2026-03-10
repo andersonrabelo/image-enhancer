@@ -9,7 +9,7 @@ use serde::Serialize;
 use std::sync::Arc;
 use tokio::net::TcpListener;
 use tower_http::cors::CorsLayer;
-use tower_http::services::ServeDir;
+use tower_http::services::{ServeDir, ServeFile};
 use uuid::Uuid;
 use std::io::Write;
 
@@ -40,7 +40,10 @@ async fn main() {
     } else {
         cwd.join("../dist")
     };
-    let serve_dir = ServeDir::new(dist_dir);
+    println!("Servindo Frontend da pasta: {:?}", dist_dir);
+    
+    let serve_dir = ServeDir::new(dist_dir.clone())
+        .fallback(ServeFile::new(dist_dir.join("index.html")));
     // Create uploads folder
     let _ = std::fs::create_dir_all("uploads");
 
