@@ -9,14 +9,20 @@ echo -e "${BLUE}=== Image Enhancer: Iniciando Setup para Linux ===${NC}"
 
 # Verifica se o Rust está instalado
 if ! command -v cargo &> /dev/null; then
-    echo "Rust não encontrado. Por favor, instale o Rust usando: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh"
-    exit 1
+    echo -e "${BLUE}Rust não encontrado. Instalando automaticamente...${NC}"
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+    source "$HOME/.cargo/env"
 fi
 
 # Verifica se o Node.js está instalado
 if ! command -v npm &> /dev/null; then
-    echo "Node.js (npm) não encontrado. Por favor, instale o Node.js antes de continuar."
-    exit 1
+    echo -e "${BLUE}Node.js (npm) não encontrado. Tentando instalar via apt...${NC}"
+    if command -v apt-get &> /dev/null; then
+        sudo apt-get update && sudo apt-get install -y nodejs npm
+    else
+        echo -e "${RED}Erro: 'apt-get' não encontrado. Instale o Node.js manualmente antes de continuar.${NC}"
+        exit 1
+    fi
 fi
 
 echo -e "${GREEN}1. Instalando dependências do Frontend e construindo...${NC}"
