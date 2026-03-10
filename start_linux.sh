@@ -43,6 +43,12 @@ chmod +x scripts/download_models.sh
 ./scripts/download_models.sh
 
 echo -e "${BLUE}=== Setup Concluído ===${NC}"
+
+echo -e "${BLUE}Limpando instâncias fantasmas de execuções anteriores...${NC}"
+fuser -k 8080/tcp 2>/dev/null || true
+pkill -f image-enhancer-server || true
+sleep 1
+
 echo -e "Iniciando o servidor na porta 8080..."
 
 # Inicia o servidor em background
