@@ -31,12 +31,10 @@ pub async fn process_image(
     let scunet_session = std::sync::Arc::clone(&state.scunet);
 
     let mut face_jobs = vec![];
-    let mut success_crops = 0;
 
     for (i, bbox) in coords.iter().enumerate() {
         if let Some((cropped, mask)) = segmentation::crop_and_mask(&base_image, bbox) {
             println!("Criado recorte {}, dimensões: {}x{}", i, cropped.width(), cropped.height());
-            success_crops += 1;
             
             // 2.A Models (Paralelo: CodeFormer para Rostos)
             if bbox.class == "face" {

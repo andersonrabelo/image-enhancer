@@ -2,16 +2,15 @@ use axum::{
     extract::{Multipart, State},
     http::StatusCode,
     response::Json,
-    routing::{get, post},
+    routing::post,
     Router,
 };
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 use std::sync::Arc;
 use tokio::net::TcpListener;
 use tower_http::cors::CorsLayer;
 use tower_http::services::ServeDir;
 use uuid::Uuid;
-use std::path::PathBuf;
 use std::io::Write;
 
 pub mod ai_pipeline;
