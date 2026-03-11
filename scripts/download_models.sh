@@ -46,9 +46,19 @@ echo "Verificando modelos na pasta $MODELS_DIR..."
 
 # --- Links para Download dos Modelos ONNX ---
 URL_YOLOV8="https://huggingface.co/deepghs/yolo-face/resolve/main/yolov8m-face/model.onnx"
-URL_CODEFORMER="https://huggingface.co/maze/faceX/resolve/main/codeformer.onnx"
+# New reliable source for CodeFormer
+URL_CODEFORMER="https://huggingface.co/deepghs/image_restoration/resolve/main/codeformer.onnx"
 URL_SCUNET="https://huggingface.co/deepghs/image_restoration/resolve/main/SCUNet-PSNR.onnx"
 URL_REALESRGAN="https://huggingface.co/AXERA-TECH/Real-ESRGAN/resolve/main/onnx/realesrgan-x4-256.onnx"
+
+# Force re-download of CodeFormer if it's small (maze/faceX version is around 25MB, deepghs is different)
+if [ -f "$MODELS_DIR/codeformer.onnx" ]; then
+    FILESIZE=$(stat -c%s "$MODELS_DIR/codeformer.onnx")
+    if [ "$FILESIZE" -lt 10000000 ]; then
+        echo -e "${RED}Modelo CodeFormer parece corrompido ou incompleto. Removendo para novo download...${NC}"
+        rm -f "$MODELS_DIR/codeformer.onnx"
+    fi
+fi
 
 download_model "$URL_YOLOV8" "yolov8_face.onnx"
 download_model "$URL_CODEFORMER" "codeformer.onnx"

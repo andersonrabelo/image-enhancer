@@ -56,7 +56,7 @@ pub fn init_models(models_dir: PathBuf) -> Result<CoreModels, String> {
         .map_err(|e| format!("Erro ao criar Builder CodeFormer: {}", e))?
         .with_optimization_level(GraphOptimizationLevel::Disable)
         .map_err(|e| format!("Erro de otimização CodeFormer: {}", e))?
-        .with_intra_threads(4)
+        .with_intra_threads(1)
         .map_err(|e| format!("Erro de threads CodeFormer: {}", e))?
         .commit_from_file(&codeformer_path)
         .map_err(|e| format!("Erro ao carregar {}: {}", codeformer_path.display(), e))?;
