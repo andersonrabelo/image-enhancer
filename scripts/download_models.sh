@@ -44,8 +44,8 @@ echo "Verificando modelos na pasta $MODELS_DIR..."
 # --- Links para Download dos Modelos ONNX ---
 URL_YOLOV8="https://huggingface.co/deepghs/yolo-face/resolve/main/yolov8m-face/model.onnx"
 # Primary and Fallback URLs for FULL 377MB CodeFormer (Stable on CPU)
-URL_CODEFORMER_1="https://huggingface.co/facefusion/models-3.0.0/resolve/main/codeformer.onnx"
-URL_CODEFORMER_2="https://huggingface.co/MonsterMMORPG/SECourses/resolve/main/codeformer.onnx"
+URL_CODEFORMER_1="https://huggingface.co/MonsterMMORPG/SECourses/resolve/main/codeformer.onnx"
+URL_CODEFORMER_2="https://huggingface.co/facefusion/models-3.0.0/resolve/main/codeformer.onnx"
 URL_SCUNET="https://huggingface.co/deepghs/image_restoration/resolve/main/SCUNet-PSNR.onnx"
 URL_REALESRGAN="https://huggingface.co/AXERA-TECH/Real-ESRGAN/resolve/main/onnx/realesrgan-x4-256.onnx"
 
