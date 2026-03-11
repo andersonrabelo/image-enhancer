@@ -69,7 +69,8 @@ async fn main() {
 pub struct ApiProcessResult {
     pub success: bool,
     pub original_path: String,
-    pub result_path: Option<String>,
+    pub restored_path: Option<String>,
+    pub upscaled_path: Option<String>,
     pub message: String,
 }
 
@@ -104,12 +105,11 @@ async fn upload_and_process_image(
     // Agora chama a pipeline. Como mudamos `process_image` para retornar a struct embutida e não usar mais tauri:
     match ai_pipeline::process_image(file_path.clone(), state).await {
         Ok(res) => {
-            // we should convert the struct, or since ProcessResult is similar we can just map it here.
             Ok(Json(ApiProcessResult {
                 success: res.success,
                 original_path: res.original_path,
-                // Make the result path accessible via URL
-                result_path: res.result_path.map(|p| p.replace("\\", "/")), 
+                restored_path: res.restored_path.map(|p| p.replace("\\", "/")), 
+                upscaled_path: res.upscaled_path.map(|p| p.replace("\\", "/")), 
                 message: res.message,
             }))
         },

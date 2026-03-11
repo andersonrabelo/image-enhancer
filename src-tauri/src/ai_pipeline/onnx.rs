@@ -6,7 +6,6 @@ use std::path::PathBuf;
 pub struct CoreModels {
     pub realesrgan: Arc<Mutex<Session>>,
     pub yolov8_face: Arc<Mutex<Session>>,
-    pub codeformer: Arc<Mutex<Session>>,
     pub scunet: Arc<Mutex<Session>>,
 }
 
@@ -50,19 +49,7 @@ pub fn init_models(models_dir: PathBuf) -> Result<CoreModels, String> {
         
     println!("✓ YOLOv8 Face carregado com sucesso.");
 
-    // 3. Carrega Restaurador Facial CodeFormer
-    let codeformer_path = models_dir.join("codeformer.onnx");
-    let codeformer = SessionBuilder::new()
-        .map_err(|e| format!("Erro ao criar Builder CodeFormer: {}", e))?
-        .commit_from_file(&codeformer_path)
-        .map_err(|e| format!("Erro ao carregar {}: {}", codeformer_path.display(), e))?;
-
-    println!("✓ CodeFormer carregado (Inputs: {}, Outputs: {})", codeformer.inputs.len(), codeformer.outputs.len());
-    for input in &codeformer.inputs {
-        println!("  - Input: {}", input.name);
-    }
-
-    println!("✓ CodeFormer carregado com sucesso.");
+    println!("✓ YOLOv8 Face carregado com sucesso.");
 
     // 4. Carrega Restaurador de Fundo SCUNet (Denoising)
     let scunet_path = models_dir.join("scunet.onnx");
@@ -80,7 +67,6 @@ pub fn init_models(models_dir: PathBuf) -> Result<CoreModels, String> {
     Ok(CoreModels {
         realesrgan: Arc::new(Mutex::new(realesrgan)),
         yolov8_face: Arc::new(Mutex::new(yolov8_face)),
-        codeformer: Arc::new(Mutex::new(codeformer)),
         scunet: Arc::new(Mutex::new(scunet)),
     })
 }
