@@ -43,7 +43,7 @@ pub async fn process_realesrgan(
             // 2. Transforma RgbaImage -> Ndarray::Array4 (BCHW - Batch, Channel, Height, Width) RGB puro sem Alpha
             let mut input_tensor = Array4::<f32>::zeros((1, 3, 256, 256));
             
-            for (ty, tx, pixel) in tile.enumerate_pixels() {
+            for (tx, ty, pixel) in tile.enumerate_pixels() {
                 // Real-ESRGAN espera valores float entre 0.0 e 1.0 (RGB)
                 input_tensor[[0, 0, ty as usize, tx as usize]] = pixel[0] as f32 / 255.0; // R
                 input_tensor[[0, 1, ty as usize, tx as usize]] = pixel[1] as f32 / 255.0; // G

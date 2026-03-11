@@ -23,7 +23,7 @@ pub async fn process_scunet(
     let img_rgb = resized.to_rgb8();
 
     let mut input_tensor = Array4::<f32>::zeros((1, 3, net_size as usize, net_size as usize));
-    for (y, x, pixel) in img_rgb.enumerate_pixels() {
+    for (x, y, pixel) in img_rgb.enumerate_pixels() {
         input_tensor[[0, 0, y as usize, x as usize]] = pixel[0] as f32 / 255.0; 
         input_tensor[[0, 1, y as usize, x as usize]] = pixel[1] as f32 / 255.0; 
         input_tensor[[0, 2, y as usize, x as usize]] = pixel[2] as f32 / 255.0; 
