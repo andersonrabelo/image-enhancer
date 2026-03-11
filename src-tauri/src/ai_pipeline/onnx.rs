@@ -28,7 +28,7 @@ pub fn init_models(models_dir: PathBuf) -> Result<CoreModels, String> {
     let realesrgan_path = models_dir.join("realesrgan-x4-256.onnx");
     let realesrgan = SessionBuilder::new()
         .map_err(|e| format!("Erro ao criar Builder Real-ESRGAN: {}", e))?
-        .with_optimization_level(GraphOptimizationLevel::Level3)
+        .with_optimization_level(GraphOptimizationLevel::Level1)
         .map_err(|e| format!("Erro de otimização Real-ESRGAN: {}", e))?
         .with_intra_threads(4)
         .map_err(|e| format!("Erro de thread int. Real-ESRGAN: {}", e))?
@@ -41,7 +41,7 @@ pub fn init_models(models_dir: PathBuf) -> Result<CoreModels, String> {
     let yolov8_path = models_dir.join("yolov8_face.onnx");
     let yolov8_face = SessionBuilder::new()
         .map_err(|e| format!("Erro ao criar Builder YOLOv8: {}", e))?
-        .with_optimization_level(GraphOptimizationLevel::Level3)
+        .with_optimization_level(GraphOptimizationLevel::Level1)
         .map_err(|e| format!("Erro de otimização YOLOv8: {}", e))?
         .with_intra_threads(2) // YOLO é leve, não precisa tantas threads alocadas
         .map_err(|e| format!("Erro de thread int. YOLOv8: {}", e))?
@@ -54,7 +54,7 @@ pub fn init_models(models_dir: PathBuf) -> Result<CoreModels, String> {
     let codeformer_path = models_dir.join("codeformer.onnx");
     let codeformer = SessionBuilder::new()
         .map_err(|e| format!("Erro ao criar Builder CodeFormer: {}", e))?
-        .with_optimization_level(GraphOptimizationLevel::Level3)
+        .with_optimization_level(GraphOptimizationLevel::Level1)
         .map_err(|e| format!("Erro de otimização CodeFormer: {}", e))?
         .with_intra_threads(4)
         .map_err(|e| format!("Erro de threads CodeFormer: {}", e))?
@@ -67,7 +67,7 @@ pub fn init_models(models_dir: PathBuf) -> Result<CoreModels, String> {
     let scunet_path = models_dir.join("scunet.onnx");
     let scunet = SessionBuilder::new()
         .map_err(|e| format!("Erro ao criar Builder SCUNet: {}", e))?
-        .with_optimization_level(GraphOptimizationLevel::Level3)
+        .with_optimization_level(GraphOptimizationLevel::Level1)
         .map_err(|e| format!("Erro de otimização SCUNet: {}", e))?
         .with_intra_threads(4)
         .map_err(|e| format!("Erro de threads SCUNet: {}", e))?
