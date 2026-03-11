@@ -54,7 +54,7 @@ pub fn init_models(models_dir: PathBuf) -> Result<CoreModels, String> {
     let codeformer_path = models_dir.join("codeformer.onnx");
     let codeformer = SessionBuilder::new()
         .map_err(|e| format!("Erro ao criar Builder CodeFormer: {}", e))?
-        .with_optimization_level(GraphOptimizationLevel::Level1)
+        .with_optimization_level(GraphOptimizationLevel::Disable)
         .map_err(|e| format!("Erro de otimização CodeFormer: {}", e))?
         .with_intra_threads(4)
         .map_err(|e| format!("Erro de threads CodeFormer: {}", e))?
