@@ -56,11 +56,12 @@ pub async fn process_realesrgan(
             
             println!("   Processando Tile X:{} Y:{} na GPU/CPU...", x, y);
             let session = session_arc.lock().map_err(|_| "Falha ao obter Mutex da Session")?;
-            let inputs = ort::inputs!["input" => input_tensor_value].map_err(|e| format!("Erro cfg inputs: {}", e))?;
-            let outputs = session.run(inputs).map_err(|e| format!("Falha na predição: {}", e))?;
+            let input_name = session.inputs[0].name.as_str();
+            let inputs = ort::inputs![input_name => input_tensor_value].map_err(|e| format!("Erro cfg inputs Real-ESRGAN: {}", e))?;
+            let outputs = session.run(inputs).map_err(|e| format!("Falha na predição Real-ESRGAN: {}", e))?;
             
-            // 4. Extrai a saída 1024x1024 da Memória diretamente para um ndarray (via ndarray feature)
-            let output_view = outputs["output"].try_extract_tensor::<f32>().map_err(|e| format!("Tensor mismatch: {}", e))?;
+            // 4. Extrai a saída da Memória diretamente para um ndarray
+            let output_view = outputs[0].try_extract_tensor::<f32>().map_err(|e| format!("Tensor mismatch Real-ESRGAN: {}", e))?;
 
             // 5. Costurar (Stitching) no Output Image Final Gigante
             // Transformar BCHW Tensor devolta p/ RBA e colar apenas o tamanho Original (crop_w * scale)

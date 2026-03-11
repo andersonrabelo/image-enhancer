@@ -48,8 +48,9 @@ pub async fn detect_faces_and_features(
     
     println!("  -> Processando YOLO Tensor (640x640)...");
     let session = session_arc.lock().map_err(|_| "Falha ao dar Lock na Sessao do YOLO")?;
-    let inputs = ort::inputs!["images" => input_tensor_value]
-        .map_err(|e| format!("Erro ao criar ort inputs: {}", e))?;
+    let input_name = session.inputs[0].name.as_str();
+    let inputs = ort::inputs![input_name => input_tensor_value]
+        .map_err(|e| format!("Erro ao criar ort inputs YOLO: {}", e))?;
     let outputs = session.run(inputs)
         .map_err(|e| format!("Falha na NPU YOLO: {}", e))?;
 

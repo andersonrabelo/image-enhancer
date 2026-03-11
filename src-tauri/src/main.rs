@@ -113,6 +113,9 @@ async fn upload_and_process_image(
                 message: res.message,
             }))
         },
-        Err(e) => Err((StatusCode::INTERNAL_SERVER_ERROR, e)),
+        Err(e) => {
+            println!("❌ ERRO na pipeline: {}", e);
+            Err((StatusCode::INTERNAL_SERVER_ERROR, e))
+        },
     }
 }

@@ -33,7 +33,8 @@ pub async fn process_codeformer(
         .map_err(|e| format!("Erro Tensor CF: {}", e))?;
         
     let session = session_arc.lock().map_err(|_| "Falha de Mutex CF")?;
-    let inputs = ort::inputs!["x" => input_tensor_value]
+    let input_name = session.inputs[0].name.as_str();
+    let inputs = ort::inputs![input_name => input_tensor_value]
         .map_err(|e| format!("Erro inputs CF: {}", e))?;
     let outputs = session.run(inputs)
         .map_err(|e| format!("Falha predição CF: {}", e))?;
@@ -80,7 +81,8 @@ pub async fn process_scunet(
         .map_err(|e| format!("Erro Tensor SCUNet: {}", e))?;
         
     let session = session_arc.lock().map_err(|_| "Falha de Mutex SCU")?;
-    let inputs = ort::inputs!["input" => input_tensor_value]
+    let input_name = session.inputs[0].name.as_str();
+    let inputs = ort::inputs![input_name => input_tensor_value]
         .map_err(|e| format!("Erro inputs SCU: {}", e))?;
     let outputs = session.run(inputs)
         .map_err(|e| format!("Falha predição SCUNet: {}", e))?;
