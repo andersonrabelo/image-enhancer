@@ -43,9 +43,9 @@ echo "Verificando modelos na pasta $MODELS_DIR..."
 
 # --- Links para Download dos Modelos ONNX ---
 URL_YOLOV8="https://huggingface.co/deepghs/yolo-face/resolve/main/yolov8m-face/model.onnx"
-# Primary and Fallback URLs for CodeFormer
-URL_CODEFORMER_1="https://huggingface.co/MonsterMMORPG/SECourses/resolve/main/codeformer.onnx"
-URL_CODEFORMER_2="https://huggingface.co/facefusion/models-3.0.0/resolve/main/codeformer.onnx"
+# Primary and Fallback URLs for FULL 377MB CodeFormer (Stable on CPU)
+URL_CODEFORMER_1="https://huggingface.co/facefusion/models-3.0.0/resolve/main/codeformer.onnx"
+URL_CODEFORMER_2="https://huggingface.co/MonsterMMORPG/SECourses/resolve/main/codeformer.onnx"
 URL_SCUNET="https://huggingface.co/deepghs/image_restoration/resolve/main/SCUNet-PSNR.onnx"
 URL_REALESRGAN="https://huggingface.co/AXERA-TECH/Real-ESRGAN/resolve/main/onnx/realesrgan-x4-256.onnx"
 
@@ -56,14 +56,19 @@ download_with_fallback() {
     local url2=$3
     local filepath="$MODELS_DIR/$filename"
 
-    # Se o arquivo já existe e é > 10MB, pulamos
+    # Se o arquivo já existe e é > 300MB (para CodeFormer) ou > 10MB (outros), pulamos
+    local min_size=10000000
+    if [[ "$filename" == "codeformer.onnx" ]]; then
+        min_size=300000000
+    fi
+
     if [ -f "$filepath" ]; then
         local size=$(stat -c%s "$filepath")
-        if [ "$size" -gt 10000000 ]; then
+        if [ "$size" -ge "$min_size" ]; then
             echo -e "${GREEN}✓ Modelo já existe e parece íntegro: $filename ($((size/1024/1024)) MB)${NC}"
             return 0
         else
-            echo -e "${RED}! Modelo $filename incompleto ($((size/1024/1024)) MB). Redownload...${NC}"
+            echo -e "${RED}! Modelo $filename incompleto ou versão antiga ($((size/1024/1024)) MB). Redownload...${NC}"
             rm -f "$filepath"
         fi
     fi
